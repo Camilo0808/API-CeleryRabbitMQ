@@ -1,0 +1,35 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  app:
+    build: ./app
+    container_name: fastapi_app
+    ports:
+      - "8000:8000"
+    environment:
+      CELERY_BROKER_URL: "amqp://guest:guest@rabbitmq:5672//"
+      CELERY_RESULT_BACKEND: "rpc://"
+    depends_on:
+      - rabbitmq
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  celery:
+    build: ./app
+    container_name: celery_worker
+    depends_on:
+      - rabbitmq
+    environment:
+      CELERY_BROKER_URL: "amqp://guest:guest@rabbitmq:5672//"
+      CELERY_RESULT_BACKEND: "rpc://"
+    command: ["celery", "-A", "main", "worker", "--loglevel=info"]
