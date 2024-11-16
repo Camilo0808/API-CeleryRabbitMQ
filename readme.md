@@ -19,8 +19,8 @@ This is a simple backend application built with FastAPI that demonstrates how to
 ## Getting Started
 ### 1. Clone the repository:
 ```bash
-git clone <repository_url>
-cd <repository_directory>
+git clone https://github.com/Camilo0808/API-CeleryRabbitMQ
+cd API-CeleryRabbitMQ
 ```
 
 ### 2. Build and run the services:
